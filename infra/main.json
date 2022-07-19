@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "4239880268833268585"
+      "templateHash": "6112263735310816911"
     }
   },
   "parameters": {
@@ -24,5 +24,11 @@
   "variables": {
     "rg": "[format('rg-{0}-{1}-{2}', parameters('name'), parameters('env'), parameters('loc'))]"
   },
-  "resources": []
+  "resources": [],
+  "outputs": {
+    "rn": {
+      "type": "string",
+      "value": "[variables('rg')]"
+    }
+  }
 }
