@@ -1,0 +1,18 @@
+{
+  "generatedBy": "Microsoft.NET.Sdk.Functions.Generator-4.0.1",
+  "configurationSource": "attributes",
+  "bindings": [
+    {
+      "type": "httpTrigger",
+      "route": "ping",
+      "methods": [
+        "get"
+      ],
+      "authLevel": "function",
+      "name": "req"
+    }
+  ],
+  "disabled": false,
+  "scriptFile": "../bin/OCAProject.dll",
+  "entryPoint": "OCAProject.PingHttpTrigger.Run"
+}
