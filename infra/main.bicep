@@ -1,12 +1,8 @@
-// parameter는 bicep 바깥에서 들어오는 입력
-// 값이 반드시 필요. 없으면 에러 // default 값 설정
 param myName string = 'HoJoonEum'
 param myEmail string = 'bldolphin96@gmail.com'
 param rcname string
-param location string = resourceGroup().location // 리소스 그룹이 배포된 위치
+param location string = resourceGroup().location
 
-// variable은 bicep 안에서 사용되는 변수
-// param과 variable의 순서는 상관이 없다.
 var ID = resourceGroup().id
 var uniqueName = uniqueString(ID)
 var storageAccountDevName = 'Standard_LRS'
@@ -81,4 +77,3 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
     Request_Source: 'rest'
   }
 }
-// 다른 bicep 파일에서 참조 가능하게 함. 모듈화할 때 사용.
