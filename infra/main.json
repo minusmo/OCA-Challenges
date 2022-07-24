@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "12289437356000776972"
+      "templateHash": "7921532688323667551"
     }
   },
   "parameters": {
@@ -34,7 +34,10 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2021-03-01",
       "name": "[variables('appsvcname')]",
-      "location": "[parameters('location')]"
+      "location": "[parameters('location')]",
+      "properties": {
+        "httpsOnly": true
+      }
     }
   ],
   "outputs": {
