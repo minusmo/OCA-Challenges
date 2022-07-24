@@ -5,38 +5,40 @@ param location string = resourceGroup().location
 
 var ID = resourceGroup().id
 var uniqueName = uniqueString(ID)
-var storageAccountDevName = 'Standard_LRS'
-var appServiceDevName = 'Y1'
-var apiManagmentDevName = 'Basic'
-var logAnalyticsDevName = 'Free'
-
+var storageAccountName = 'StorageAccount-${rcname}-${uniqueName}'
+var storageAccountSkuName = 'Standard_LRS'
+var appServiceName = 'AppServicePlan-${rcname}-${uniqueName}'
+var appServiceSkuName = 'Y1'
+var apiManagementName = 'ApiManagement-${rcname}-${uniqueName}'
+var apiManagmentSkuName = 'Basic'
+var azureFunctionName = 'AzureFunction-${rcname}-${uniqueName}'
+var logAnalyticsName = 'LogAnalytics-${rcname}-${uniqueName}'
+var logAnalyticsSkuName = 'Free'
+var applicationInsightsName = 'ApplicationInsights-${rcname}-${uniqueName}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: 'StorageAccount${rcname}${uniqueName}'
+  name: storageAccountName
   location: location
   kind: 'Storage'
   sku: {
-    name: storageAccountDevName
-  }
-  properties: {
-    accessTier: 'Hot'
+    name: storageAccountSkuName
   }
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-  name: 'AppServicePlan${rcname}${uniqueName}'
+  name: appServiceName
   location: location
   sku: {
-    name: appServiceDevName
+    name: appServiceSkuName
     tier: 'Dynamic'
   }
 }
 
 resource apiManagement 'Microsoft.ApiManagement/service@2021-12-01-preview' = {
-  name: 'ApiManagement${rcname}${uniqueName}'
+  name: apiManagementName
   location: location
   sku: {
-    name: apiManagmentDevName
+    name: apiManagmentSkuName
     capacity: 1
   }
   properties: {
@@ -46,7 +48,7 @@ resource apiManagement 'Microsoft.ApiManagement/service@2021-12-01-preview' = {
 }
 
 resource azureFunction 'Microsoft.Web/sites@2021-03-01' = {
-  name: 'AzureFunction${rcname}${uniqueName}'
+  name: azureFunctionName
   location: location
   kind: 'functionapp'
   identity: {
@@ -58,18 +60,18 @@ resource azureFunction 'Microsoft.Web/sites@2021-03-01' = {
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: 'LogAnalytics${rcname}${uniqueName}'
+  name: logAnalyticsName
   location: location
   properties: {
+    retentionInDays: 7
     sku: {
-      name: logAnalyticsDevName
+      name: logAnalyticsSkuName
     }
-
   }
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'ApplicationInsights${rcname}${uniqueName}'
+  name: applicationInsightsName
   location: location
   kind: 'web'
   properties: {

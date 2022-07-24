@@ -12,13 +12,14 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
 using System.Net;
+using OCAProject.Models;
 
 namespace OCAProject
 {
     public class PingHttpTrigger
     {
-        private readonly IMyService _service;
-        public PingHttpTrigger(IMyService service) {
+        private readonly Services.IMyService _service;
+        public PingHttpTrigger(Services.IMyService service) {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -43,25 +44,6 @@ namespace OCAProject
             var res = new ResponseMessage() { Message = result };
 
             return new OkObjectResult(res);
-        }
-    }
-
-    public class ResponseMessage {
-        [JsonProperty("response_message")] // Json 응답 객체의 key 를 변경. 기본적으로는 파스칼 케이싱을 캐멀 케이싱으로 변환.
-        public string Message { get; set; }
-    }
-
-    public interface IMyService {
-        string GetMessage(string name);
-    }
-
-    public class MyService : IMyService {
-        public string GetMessage(string name) {
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return responseMessage;
         }
     }
 }

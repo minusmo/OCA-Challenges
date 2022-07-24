@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using OCAProject.Services;
 
 [assembly: FunctionsStartup(typeof(OCAProject.Startup))]
 namespace OCAProject
