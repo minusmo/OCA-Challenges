@@ -5,16 +5,22 @@ param location string = resourceGroup().location
 
 var ID = resourceGroup().id
 var uniqueName = uniqueString(ID)
-var storageAccountName = 'StorageAccount-${rcname}-${uniqueName}'
+
+var storageAccountName = 'stacc${rcname}${uniqueName}'
 var storageAccountSkuName = 'Standard_LRS'
-var appServiceName = 'AppServicePlan-${rcname}-${uniqueName}'
+
+var appServiceName = 'appsvcplan-${rcname}-${uniqueName}'
 var appServiceSkuName = 'Y1'
-var apiManagementName = 'ApiManagement-${rcname}-${uniqueName}'
+
+var apiManagementName = 'apim-${rcname}-${uniqueName}'
 var apiManagmentSkuName = 'Basic'
-var azureFunctionName = 'AzureFunction-${rcname}-${uniqueName}'
-var logAnalyticsName = 'LogAnalytics-${rcname}-${uniqueName}'
-var logAnalyticsSkuName = 'Free'
-var applicationInsightsName = 'ApplicationInsights-${rcname}-${uniqueName}'
+
+var azureFunctionName = 'azurefunc-${rcname}-${uniqueName}'
+
+var logAnalyticsName = 'wrkspc-${rcname}-${uniqueName}'
+var logAnalyticsSkuName = 'PerGB2018'
+
+var applicationInsightsName = 'appinsights-${rcname}-${uniqueName}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
@@ -63,7 +69,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
   name: logAnalyticsName
   location: location
   properties: {
-    retentionInDays: 7
+    retentionInDays: 30
     sku: {
       name: logAnalyticsSkuName
     }
@@ -76,6 +82,6 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    Request_Source: 'rest'
+    WorkspaceResourceId: logAnalytics.id
   }
 }
