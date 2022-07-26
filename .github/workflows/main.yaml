@@ -12,10 +12,16 @@ jobs: # 어떤 일을 할지를 정의
     strategy:
       matrix: 
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+        nodejs: [ '14.x', '16.x' ]
     runs-on: ${{ matrix.os }} # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
 
     steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Say Hello on ${{ matrix.os }}'
+    - name: 'Setup node.js version'
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.nodejs }}
+
+    - name: 'Check node.js version on ${{ matrix.os }}'
       shell: bash
-      run: | # 멀티 라인 명령을 넣을 때는 | 을 넣어야함.
-        echo "Hello from ${{ matrix.os }}"
+      run: |
+        echo "nodejs version: $(node --version)"
