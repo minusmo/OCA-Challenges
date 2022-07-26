@@ -21,6 +21,18 @@ jobs: # 어떤 일을 할지를 정의
       with:
         node-version: ${{ matrix.nodejs }}
 
+    - name: 'Run only on Windows'
+      if: matrix.os == "windows-latest"
+      shell: bash
+      run: |
+        echo "Windows Only"
+
+    - name: 'Run not on Windows'
+      if: matrix.os != "windows-latest"
+      shell: bash
+      run: |
+        echo "Not on Windows"
+
     - name: 'Check node.js version on ${{ matrix.os }}'
       shell: bash
       run: |
