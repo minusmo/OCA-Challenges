@@ -10,7 +10,6 @@ jobs: # 어떤 일을 할지를 정의
     name: 'Build Job'
 
     runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
-
     steps: # 어떤 스텝으로 실행할 것인가를 정의
     - name: 'Build-job'
       shell: bash
@@ -19,8 +18,7 @@ jobs: # 어떤 일을 할지를 정의
     
   deploy-to-dev-job:
     name: "Deployment Job to Dev"
-    needs:
-      - build-job
+
     runs-on: ubuntu-latest
     steps:
       - name: 'Say Lorem'
@@ -31,6 +29,7 @@ jobs: # 어떤 일을 할지를 정의
   deploy-to-prod-job:
     name: "Deployment Job to Prod"
     needs:
+      - build-job
       - deploy-to-dev-job
     runs-on: ubuntu-latest
     steps:
