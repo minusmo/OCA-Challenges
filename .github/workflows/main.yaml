@@ -31,7 +31,7 @@ jobs: # 어떤 일을 할지를 정의
   deploy-to-prod-job:
     name: "Deployment Job to Prod"
     needs:
-      - build-job
+      - deploy-to-dev-job
     runs-on: ubuntu-latest
     steps:
       - name: 'Say Lorem'
