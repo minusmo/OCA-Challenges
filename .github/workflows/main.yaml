@@ -6,35 +6,36 @@ env: # 환경 변수 지정. 각 환경 변수는 자신의 블록(인덴테이�
   WORKFLOW_LEVEL: 'This value comes from the workflow level'
 
 jobs: # 어떤 일을 할지를 정의
-  first-job: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
-    name: 'First Job'
-    if: github.event_name == 'pull_request'
+  build-job: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
+    name: 'Build Job'
 
-    strategy:
-      matrix: 
-        os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
-        nodejs: [ '14.x', '16.x' ]
-    runs-on: ${{ matrix.os }} # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
+    runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
 
     steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Setup node.js version'
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.nodejs }}
-
-    - name: 'Run only on Windows'
-      if: matrix.os == 'windows-latest'
+    - name: 'Build-job'
       shell: bash
       run: |
-        echo "Windows Only"
+        echo "Build"
+    
+  deploy-to-dev-job:
+    name: "Deployment Job to Dev"
+    needs:
+      - build-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Say Lorem'
+        shell: bash
+        run: |
+          echo "Development"
 
-    - name: 'Run not on Windows'
-      if: matrix.os != 'windows-latest'
-      shell: bash
-      run: |
-        echo "Not on Windows"
-
-    - name: 'Check node.js version on ${{ matrix.os }}'
-      shell: bash
-      run: |
-        echo "nodejs version: $(node --version)"
+  deploy-to-prod-job:
+    name: "Deployment Job to Prod"
+    needs:
+      - build-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Say Lorem'
+        shell: bash
+        run: |
+          echo "Production"
+      
