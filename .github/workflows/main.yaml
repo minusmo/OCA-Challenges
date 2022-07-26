@@ -8,34 +8,14 @@ env: # 환경 변수 지정. 각 환경 변수는 자신의 블록(인덴테이�
 jobs: # 어떤 일을 할지를 정의
   first-job: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
     name: 'First Job'
-    runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
+
+    strategy:
+      matrix: 
+        os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+    runs-on: ${{ matrix.os }} # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
 
     steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Set output value 1'
-      id: step1
+    - name: 'Say Hello on ${{ matrix.os }}'
       shell: bash
       run: | # 멀티 라인 명령을 넣을 때는 | 을 넣어야함.
-        STEP_1='This value comes from the step 1'
-        echo "::add-mask::$STEP_1"
-        echo "::set-output name=value1::$STEP_1"
-
-    - name: 'Set output value 2'
-      id: step2
-      shell: pwsh
-      run: |
-        $STEP_2='This value comes from the step 2'
-        echo "::set-output name=value2::$STEP_2"
-
-    - name: 'Get environment variables'
-      shell: pwsh
-      run: | # 깃허브 액션의 경우(문법)
-        echo "STEP 1: ${{ steps.step1.outputs.value1 }}"
-        echo "STEP 2: ${{ steps.step2.outputs.value2 }}"
-        echo "SECRET_1: ${{ secrets.SECRET_1 }}"
-
-        if ("${{ secrets.SECRET_1 }}" -eq "Hello World") {
-          echo "TRUE"
-        }
-        else {
-          echo "FALSE"
-        }
+        echo "Hello from ${{ matrix.os }}"
