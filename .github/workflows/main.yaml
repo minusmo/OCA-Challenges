@@ -8,6 +8,7 @@ env: # 환경 변수 지정. 각 환경 변수는 자신의 블록(인덴테이�
 jobs: # 어떤 일을 할지를 정의
   first-job: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
     name: 'First Job'
+    if: github.event_name == 'pull_request'
 
     strategy:
       matrix: 
