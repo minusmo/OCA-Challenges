@@ -15,10 +15,33 @@ jobs: # 어떤 일을 할지를 정의
       shell: bash
       run: |
         echo "Build"
-    
+
   deploy-to-dev-job:
     name: "Deployment Job to Dev"
+    needs:
+      - build-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Say Lorem'
+        shell: bash
+        run: |
+          echo "Development"
+    
+  deploy-to-qa1-job:
+    name: "Deployment Job to QA1"
+    needs:
+      - deploy-to-dev-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Say Lorem'
+        shell: bash
+        run: |
+          echo "Development"
 
+  deploy-to-qa2-job:
+    name: "Deployment Job to QA2"
+    needs:
+      - deploy-to-dev-job
     runs-on: ubuntu-latest
     steps:
       - name: 'Say Lorem'
@@ -29,8 +52,8 @@ jobs: # 어떤 일을 할지를 정의
   deploy-to-prod-job:
     name: "Deployment Job to Prod"
     needs:
-      - build-job
-      - deploy-to-dev-job
+      - deploy-to-qa1-job
+      - deploy-to-qa2-job
     runs-on: ubuntu-latest
     steps:
       - name: 'Say Lorem'
