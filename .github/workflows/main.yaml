@@ -27,8 +27,15 @@ jobs: # 어떤 일을 할지를 정의
         echo "::set-output name=value2::$STEP_2"
 
     - name: 'Get environment variables'
-      shell: bash
+      shell: pwsh
       run: | # 깃허브 액션의 경우(문법)
         echo "STEP 1: ${{ steps.step1.outputs.value1 }}"
         echo "STEP 2: ${{ steps.step2.outputs.value2 }}"
         echo "SECRET_1: ${{ secrets.SECRET_1 }}"
+
+        if ("${{ secrets.SECRET_1 }}" -eq "Hello World") {
+          echo "TRUE"
+        }
+        else {
+          echo "FALSE"
+        }
