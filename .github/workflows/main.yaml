@@ -1,0 +1,17 @@
+name: "My First Github Action" # 깃허브 액션의 이름
+
+on: push # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
+
+jobs: # 어떤 일을 할지를 정의
+  first-job: # 빌드 서버 하나. 독립적인 머신
+    name: 'First Job'
+    runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
+    steps: # 어떤 스텝으로 실행할 것인가를 정의
+      - name: 'Say hello world on step 1'
+        shell: bash
+        run: 
+          echo "Hello world on step 1"
+      - name: 'Say Lorem Ipsum on step 2'
+        shell: pwsh
+        run: 
+          echo "Say Lorem Ipsum on step 2"
