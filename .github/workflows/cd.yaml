@@ -40,8 +40,8 @@ jobs:
         uses: 'marvinpinto/action-automatic-releases@latest'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: 'the latest'
+          automatic_release_tag: 'latestv2'
           prerelease: false
-          title: '${{ inpust.title }}'
+          title: '${{ inputs.title }}'
           files: |
-            artifacts/${{ inpust.artifact_name }}.zip
+            artifacts/${{ inputs.artifact_name }}.zip
