@@ -1,80 +1,25 @@
 name: "Manual Release" # 깃허브 액션의 이름
 
 on: # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
-  workflow_dispatch: # 수동으로 이벤트를 트리거하는 것
-    inputs:
-      title:
-        type: string
-        required: true
-        description: 'Enter the release title'
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
 
 jobs: # 어떤 일을 할지를 정의
-  build: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
-    name: 'Build Apps'
+  call_build:
+    uses: ./.github/workflows/ci.yaml
+    with:
+      artifact_name: apiapp
 
-    runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
-
-    steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Checkout this repo'
-      uses: actions/checkout@v2 # github marketplace에 있는 오픈소스 액션을 사용함.
-
-    - name: 'Setup .NET SDK'
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.x'
-
-    - name: 'Restore NuGet packages'
-      shell: bash
-      run: |
-        dotnet restore ./api
-
-    - name: 'Build Solution'
-      shell: bash
-      run: |
-        dotnet build ./api -c Release
-
-    - name: 'Create Function App artifact'
-      shell: bash
-      run: |
-        dotnet publish ./api -c Release -o ./api/bin/published
-
-    - name: 'Upload FunctionApp artifact'
-      uses: actions/upload-artifact@v2
-      with:
-        name: 'apiapp'
-        path: api/bin/published
-
-
-  release:
-    name: "Release Apps"
-    needs:
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 'Download FunctionApp artifact'
-        uses: actions/download-artifact@v2
-        with:
-          name: 'apiapp'
-          path:  artifacts/api
-      
-      - name: 'Zip FunctionApp artifact'
-        shell: bash
-        run: |
-          pushd artifacts/api
-          zip -qq -r apiapp.zip .
-          popd
-
-          mv artifacts/api/apiapp.zip artifacts/apiapp.zip
-
-      - name: 'Release FunctionApp artifact'
-        uses: 'marvinpinto/action-automatic-releases@latest'
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: false
-          title: "${{ github.event.inputs.title }}"
-          files: |
-            artifacts/apiapp.zip
-      
+  call_release:
+    uses: ./.github/workflows/cd.yaml
+    needs: call_build
+    with:
+      title: latests
+      artifact_name: apiapp
+    secrets: inherit
