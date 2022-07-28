@@ -1,35 +1,80 @@
 name: "My First Github Action" # 깃허브 액션의 이름
 
 on: # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
-  push: # 어떤 이벤트에 트리거 될지를 정의
+  push: # 어떤 이벤트에 트리거 될지를 정의. 선언된 브랜치에도 실행되고, 태그에서도 실행된다.
     branches: # 어떤 브랜치에서 트리거 될지를 정의
       - main
     tags: # 어떤 태그에서 트리거 될지를 정의
-      - dev
-    
-
-env: # 환경 변수 지정. 각 환경 변수는 자신의 블록(인덴테이션)에 해당하는 스코프를 가짐. 스코프는 최소한으로 유지하는 것이 좋다.
-  WORKFLOW_LEVEL: 'This value comes from the workflow level'
+      - 'v*'
+  pull_request:
+    branches:
+      - main
 
 jobs: # 어떤 일을 할지를 정의
-  build-job: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
-    name: 'Build Job'
+  build: # 빌드 서버 하나. 독립적인 머신 여러개가 있을 때는 누가 먼저 실행될지 알 수 없음.(병렬)
+    name: 'Build Apps'
 
     runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
+
     steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Log Build'
+    - name: 'Checkout this repo'
+      uses: actions/checkout@v2 # github marketplace에 있는 오픈소스 액션을 사용함.
+
+    - name: 'Setip .NET SDK'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.x'
+        
+    - name: 'Restore NuGet packages'
       shell: bash
       run: |
-        echo "Build Job runs"
+        dotnet restore ./api
 
-  release-job:
-    name: "Deployment Job to Prod"
+    - name: 'Build Solution'
+      shell: bash
+      run: |
+        dotnet build ./api -c Release
+
+    - name: 'Create Function App artifact'
+      shell: bash
+      run: |
+        dotnet publish ./api -c Release -o ./api/bin/published
+
+    - name: 'Upload FunctionApp artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'apiapp'
+        path: api/bin/published
+
+
+  release:
+    name: "Release Apps"
     needs:
-      - build-job
+      - build
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: 'Log Release'
+      - name: 'Download FunctionApp artifact'
+        uses: actions/download-artifact@v2
+        with:
+          name: 'apiapp'
+          path: artifacts/api
+      
+      - name: 'Zip FunctionApp artifact'
         shell: bash
         run: |
-          echo "Release Job runs"
+          pushd artifacts/api
+          zip -qq -r apiapp.zip .
+          popd
+
+          mv artifacts/api/apiapp.zip artifacts/apiapp.zip
+
+      - name: 'Release FunctionApp artifact'
+        uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            artifacts/apiapp.zip
       
