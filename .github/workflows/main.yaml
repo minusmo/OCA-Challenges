@@ -20,11 +20,11 @@ jobs: # 어떤 일을 할지를 정의
     - name: 'Checkout this repo'
       uses: actions/checkout@v2 # github marketplace에 있는 오픈소스 액션을 사용함.
 
-    - name: 'Setip .NET SDK'
+    - name: 'Setup .NET SDK'
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.x'
-        
+
     - name: 'Restore NuGet packages'
       shell: bash
       run: |
@@ -59,7 +59,7 @@ jobs: # 어떤 일을 할지를 정의
         uses: actions/download-artifact@v2
         with:
           name: 'apiapp'
-          path: artifacts/api
+          path:  artifacts/api
       
       - name: 'Zip FunctionApp artifact'
         shell: bash
@@ -74,6 +74,7 @@ jobs: # 어떤 일을 할지를 정의
         uses: 'marvinpinto/action-automatic-releases@latest'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
           prerelease: false
           files: |
             artifacts/apiapp.zip
