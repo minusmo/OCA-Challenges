@@ -1,4 +1,4 @@
-name: "Manual Release" # 깃허브 액션의 이름
+name: "My First Github Actions" # 깃허브 액션의 이름
 
 on: # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
   push:
