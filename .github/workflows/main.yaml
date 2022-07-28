@@ -1,6 +1,12 @@
 name: "My First Github Action" # 깃허브 액션의 이름
 
-on: push # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
+on: # 트리거 이벤트를 정의. 푸쉬했을 때 작동한다! 여러개를 선언할 수도 있다.
+  push: # 어떤 이벤트에 트리거 될지를 정의
+    branches: # 어떤 브랜치에서 트리거 될지를 정의
+      - main
+    tags: # 어떤 태그에서 트리거 될지를 정의
+      - dev
+    
 
 env: # 환경 변수 지정. 각 환경 변수는 자신의 블록(인덴테이션)에 해당하는 스코프를 가짐. 스코프는 최소한으로 유지하는 것이 좋다.
   WORKFLOW_LEVEL: 'This value comes from the workflow level'
@@ -11,53 +17,19 @@ jobs: # 어떤 일을 할지를 정의
 
     runs-on: ubuntu-latest # 빌드 서버의 운영체제를 정의. 이것도 여러개를 선언할 수도 있음.
     steps: # 어떤 스텝으로 실행할 것인가를 정의
-    - name: 'Build-job'
+    - name: 'Log Build'
       shell: bash
       run: |
-        echo "Build"
+        echo "Build Job runs"
 
-  deploy-to-dev-job:
-    name: "Deployment Job to Dev"
+  release-job:
+    name: "Deployment Job to Prod"
     needs:
       - build-job
     runs-on: ubuntu-latest
     steps:
-      - name: 'Say Lorem'
+      - name: 'Log Release'
         shell: bash
         run: |
-          echo "Development"
-    
-  deploy-to-qa1-job:
-    name: "Deployment Job to QA1"
-    needs:
-      - deploy-to-dev-job
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Say Lorem'
-        shell: bash
-        run: |
-          echo "Development"
-
-  deploy-to-qa2-job:
-    name: "Deployment Job to QA2"
-    needs:
-      - deploy-to-dev-job
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Say Lorem'
-        shell: bash
-        run: |
-          echo "Development"
-
-  deploy-to-prod-job:
-    name: "Deployment Job to Prod"
-    needs:
-      - deploy-to-qa1-job
-      - deploy-to-qa2-job
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Say Lorem'
-        shell: bash
-        run: |
-          echo "Production"
+          echo "Release Job runs"
       
