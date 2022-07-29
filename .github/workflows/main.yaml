@@ -16,10 +16,20 @@ jobs: # 어떤 일을 할지를 정의
     with:
       artifact_name: apiapp
 
-  call_release:
+  call_release_dev:
     uses: ./.github/workflows/cd.yaml
     needs: call_build
     with:
       title: latests
       artifact_name: apiapp
+      env: DEV
+    secrets: inherit
+
+  call_release_prod:
+    uses: ./.github/workflows/cd.yaml
+    needs: call_release_dev
+    with:
+      title: latests
+      artifact_name: apiapp
+      env: PROD
     secrets: inherit
