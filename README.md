@@ -20,3 +20,4 @@
 - Azure Resource Manager
 - Bicep
 - C#
+- Github Actions
